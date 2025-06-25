@@ -130,19 +130,24 @@
                         </select>
                     </div>
                 </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="task-project">Project</label>
-                        <select id="task-project">
-                            <option value="">No Project</option>
-                            <!-- Projects will be added here dynamically -->
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="task-labels">Labels (comma separated)</label>
-                        <input type="text" id="task-labels" placeholder="work, personal, urgent">
-                    </div>
+                <div class="form-group">
+                    <label for="task-project">Project</label>
+                    <select id="task-project">
+                        <option value="">No Project</option>
+                        <!-- Projects will be added here dynamically -->
+                    </select>
                 </div>
+                <div class="form-group">
+                    <label for="task-executor">Executor:</label>
+                    <select id="task-executor" required>
+                        <!-- Projects will be added here dynamically -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="task-labels">Labels (comma separated)</label>
+                    <input type="text" id="task-labels" placeholder="work, personal, urgent">
+                </div>
+
                 <button type="submit" class="submit-btn">Save Task</button>
             </form>
         </div>

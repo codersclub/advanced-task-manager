@@ -12,7 +12,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const projectForm = document.getElementById('project-form');
     const tasksList = document.getElementById('tasks-list');
     const projectsList = document.getElementById('projects-list');
+    const executorsList = document.getElementById('executors-list');
     const taskProjectSelect = document.getElementById('task-project');
+    const taskExecutorSelect = document.getElementById('task-executor');
     const priorityFilter = document.getElementById('priority-filter');
     const dateFilter = document.getElementById('date-filter');
     const taskSearch = document.getElementById('task-search');
@@ -184,6 +186,17 @@ document.addEventListener('DOMContentLoaded', function() {
             const option = document.createElement('option');
             option.value = project.id;
             option.textContent = project.name;
+            taskProjectSelect.appendChild(option);
+        });
+    }
+    
+    function populateExecutorDropdown() {
+        taskExecutorSelect.innerHTML = '<option value="">No Executor</option>';
+        
+        executors.forEach(project => {
+            const option = document.createElement('option');
+            option.value = executor.id;
+            option.textContent = executor.name;
             taskProjectSelect.appendChild(option);
         });
     }
@@ -559,6 +572,53 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Update project dropdown in task form
         populateProjectDropdown();
+    }
+
+    function renderExecutors() {
+        executorsList.innerHTML = '';
+        
+        if (executors.length === 0) {
+            executorsList.innerHTML = '<p class="no-executors">No executors yet</p>';
+            return;
+        }
+        
+        executors.forEach(executor => {
+            const executorElement = document.createElement('div');
+            executorElement.className = 'executor-item';
+            executorElement.innerHTML = `
+                <span class="executor-color" style="background-color: ${executor.color}"></span>
+                <span class="executor-name">${executor.name}</span>
+                <button class="delete-executor" data-executor-id="${executor.id}">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            
+            executorElement.addEventListener('click', function(e) {
+                if (!e.target.classList.contains('delete-executor') && !e.target.closest('.delete-executor')) {
+                    currentView = 'all';
+                    currentFilters = { priority: 'all', date: 'all' };
+                    priorityFilter.value = 'all';
+                    dateFilter.value = 'all';
+                    setCurrentView('all');
+                    document.getElementById('task-project').value = project.id;
+                    renderTasks();
+                }
+            });
+            
+            const deleteBtn = projectElement.querySelector('.delete-executor');
+            deleteBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const executorId = this.getAttribute('data-executor-id');
+                if (confirm('Are you sure you want to delete this executor? Tasks of this executor will not be deleted.')) {
+                    deleteExecutor(executorId);
+                }
+            });
+            
+            executorsList.appendChild(executorElement);
+        });
+        
+        // Update project dropdown in task form
+        populateExecutorDropdown();
     }
 
     function toggleTaskComplete(taskId) {
