@@ -212,7 +212,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const option = document.createElement('option');
             option.value = executor.id;
             option.textContent = executor.name;
-            taskProjectSelect.appendChild(option);
+            taskExecutorSelect.appendChild(option);
         });
     }
     
