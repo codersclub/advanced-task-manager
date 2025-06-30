@@ -3,13 +3,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const themeSwitch = document.getElementById('theme-switch');
     const addTaskBtn = document.getElementById('add-task-btn');
     const addProjectBtn = document.getElementById('add-project-btn');
+    const addExecutorBtn = document.getElementById('add-executor-btn');
     const sortTasksBtn = document.getElementById('sort-tasks-btn');
     const taskModal = document.getElementById('task-modal');
     const projectModal = document.getElementById('project-modal');
+    const executorModal = document.getElementById('executor-modal');
     const sortModal = document.getElementById('sort-modal');
     const closeBtns = document.querySelectorAll('.close-btn');
     const taskForm = document.getElementById('task-form');
     const projectForm = document.getElementById('project-form');
+    const executorForm = document.getElementById('executor-form');
     const tasksList = document.getElementById('tasks-list');
     const projectsList = document.getElementById('projects-list');
     const executorsList = document.getElementById('executors-list');
@@ -35,6 +38,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // State
     let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
     let projects = JSON.parse(localStorage.getItem('projects')) || [];
+    let executors = JSON.parse(localStorage.getItem('executors')) || [];
     let currentView = 'all';
     let currentSort = { by: 'dueDate', order: 'asc' };
     let currentFilters = { priority: 'all', date: 'all' };
@@ -52,6 +56,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Load tasks and projects
         renderTasks();
         renderProjects();
+        renderExecutors();
         updateStats();
         
         // Set up event listeners
@@ -72,6 +77,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Modal open buttons
         addTaskBtn.addEventListener('click', () => openTaskModal());
         addProjectBtn.addEventListener('click', () => openProjectModal());
+        addExecutorBtn.addEventListener('click', () => openExecutorModal());
         sortTasksBtn.addEventListener('click', () => openSortModal());
         
         // Modal close buttons
@@ -92,6 +98,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Form submissions
         taskForm.addEventListener('submit', handleTaskSubmit);
         projectForm.addEventListener('submit', handleProjectSubmit);
+        executorForm.addEventListener('submit', handleExecutorSubmit);
         
         // Filter and search
         priorityFilter.addEventListener('change', function() {
@@ -154,12 +161,20 @@ document.addEventListener('DOMContentLoaded', function() {
         // Populate projects dropdown
         populateProjectDropdown();
         
+        // Populate executors dropdown
+        populateExecutorDropdown();
+        
         taskModal.style.display = 'flex';
     }
     
     function openProjectModal() {
         projectForm.reset();
         projectModal.style.display = 'flex';
+    }
+    
+    function openExecutorModal() {
+        executorForm.reset();
+        executorModal.style.display = 'flex';
     }
     
     function openSortModal() {
@@ -193,7 +208,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function populateExecutorDropdown() {
         taskExecutorSelect.innerHTML = '<option value="">No Executor</option>';
         
-        executors.forEach(project => {
+        executors.forEach(executor => {
             const option = document.createElement('option');
             option.value = executor.id;
             option.textContent = executor.name;
@@ -210,6 +225,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const dueDate = document.getElementById('task-due-date').value;
         const priority = document.getElementById('task-priority').value;
         const projectId = document.getElementById('task-project').value;
+        const executorId = document.getElementById('task-executor').value;
         const labels = document.getElementById('task-labels').value
             .split(',')
             .map(label => label.trim())
@@ -221,6 +237,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         const project = projects.find(p => p.id === projectId);
+        const executor = executors.find(p => p.id === executorId);
         
         const taskData = {
             title,
@@ -230,6 +247,8 @@ document.addEventListener('DOMContentLoaded', function() {
             project: project ? project.id : null,
             projectName: project ? project.name : null,
             projectColor: project ? project.color : null,
+            executor: executor ? executor.id : null,
+            executorName: executor ? executor.name : null,
             labels,
             isCompleted: false,
             isImportant: false,
@@ -265,7 +284,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const name = document.getElementById('project-name').value.trim();
         const color = document.getElementById('project-color').value;
         
-                if (!name) {
+        if (!name) {
             alert('Project name is required!');
             return;
         }
@@ -280,6 +299,27 @@ document.addEventListener('DOMContentLoaded', function() {
         saveProjects();
         renderProjects();
         projectModal.style.display = 'none';
+    }
+
+    function handleExecutorSubmit(e) {
+        e.preventDefault();
+        
+        const name = document.getElementById('executor-name').value.trim();
+        
+        if (!name) {
+            alert('Executor name is required!');
+            return;
+        }
+
+        const executorData = {
+            id: generateId(),
+            name
+        };
+
+        executors.push(executorData);
+        saveExecutors();
+        renderExecutors();
+        executorModal.style.display = 'none';
     }
 
     function setCurrentView(view) {
@@ -448,6 +488,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 `;
             }
             
+            // Executor display
+            let executorDisplay = '';
+            if (task.executor) {
+                executorDisplay = `
+                    <div class="task-detail">
+                        <i class="fas fa-user"></i>
+                        <span class="task-executor">
+                            ${task.executorName}
+                        </span>
+                    </div>
+                `;
+            }
+            
             // Labels display
             let labelsDisplay = '';
             if (task.labels && task.labels.length > 0) {
@@ -487,6 +540,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <span class="task-priority ${task.priority}">${priorityDisplay}</span>
                     </div>
                     ${projectDisplay}
+                    ${executorDisplay}
                 </div>
                 ${labelsDisplay}
             `;
@@ -586,7 +640,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const executorElement = document.createElement('div');
             executorElement.className = 'executor-item';
             executorElement.innerHTML = `
-                <span class="executor-color" style="background-color: ${executor.color}"></span>
                 <span class="executor-name">${executor.name}</span>
                 <button class="delete-executor" data-executor-id="${executor.id}">
                     <i class="fas fa-times"></i>
@@ -600,12 +653,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     priorityFilter.value = 'all';
                     dateFilter.value = 'all';
                     setCurrentView('all');
-                    document.getElementById('task-project').value = project.id;
+                    document.getElementById('task-executor').value = executor.id;
                     renderTasks();
                 }
             });
             
-            const deleteBtn = projectElement.querySelector('.delete-executor');
+            const deleteBtn = executorElement.querySelector('.delete-executor');
             deleteBtn.addEventListener('click', function(e) {
                 e.stopPropagation();
                 const executorId = this.getAttribute('data-executor-id');
@@ -663,6 +716,26 @@ document.addEventListener('DOMContentLoaded', function() {
         saveProjects();
         saveTasks();
         renderProjects();
+        renderExecutors();
+        renderTasks();
+    }
+
+    function deleteExecutor(executorId) {
+        // Remove executor from executors list
+        executors = executors.filter(p => p.id !== executorId);
+        
+        // Remove project reference from tasks
+        tasks.forEach(task => {
+            if (task.executor === executorId) {
+                task.executor = null;
+                task.executorName = null;
+            }
+        });
+        
+        saveExecutors();
+        saveTasks();
+        renderProjects();
+        renderExecutors();
         renderTasks();
     }
 
@@ -682,6 +755,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function saveProjects() {
         localStorage.setItem('projects', JSON.stringify(projects));
+    }
+
+    function saveExecutors() {
+        localStorage.setItem('executors', JSON.stringify(executors));
     }
 
     function generateId() {

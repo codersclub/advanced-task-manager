@@ -38,6 +38,13 @@
                     </div>
                     <button id="add-project-btn"><i class="fas fa-plus"></i> Add Project</button>
                 </div>
+                <div class="executors-section">
+                    <h3>Executors</h3>
+                    <div class="executors-list" id="executors-list">
+                        <!-- Executors will be added here dynamically -->
+                    </div>
+                    <button id="add-executor-btn"><i class="fas fa-plus"></i> Add Executor</button>
+                </div>
                 <div class="stats-section">
                     <h3>Statistics</h3>
                     <div class="stats-item">
@@ -139,7 +146,9 @@
                 </div>
                 <div class="form-group">
                     <label for="task-executor">Executor:</label>
-                    <select id="task-executor" required>
+                    <select id="task-executor">
+                        <!-- Опция по умолчанию, если исполнитель не выбран -->
+                        <option value="">-- No executor --</option>
                         <!-- Projects will be added here dynamically -->
                     </select>
                 </div>
@@ -167,6 +176,20 @@
                     <input type="color" id="project-color" value="#4e73df">
                 </div>
                 <button type="submit" class="submit-btn">Create Project</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="executor-modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Add New Executor</h2>
+            <form id="executor-form">
+                <div class="form-group">
+                    <label for="executor-name">Executor Name</label>
+                    <input type="text" id="executor-name">
+                </div>
+                <button type="submit" class="submit-btn">Add Executor</button>
             </form>
         </div>
     </div>
