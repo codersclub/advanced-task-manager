@@ -161,10 +161,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // Populate projects dropdown
-        populateProjectDropdown();
+        populateProjectDropdown(task.project);
         
         // Populate executors dropdown
-        populateExecutorDropdown();
+        populateExecutorDropdown(task.executor);
         
         taskModal.style.display = 'flex';
     }
@@ -196,26 +196,62 @@ document.addEventListener('DOMContentLoaded', function() {
         sortModal.style.display = 'none';
     }
     
-    function populateProjectDropdown() {
-        taskProjectSelect.innerHTML = '<option value="">No Project</option>';
-        
+    function populateProjectDropdown(selectedProjectId = "") {
+        const projectSelect = document.getElementById('task-project'); // or your project selector ID
+        if (!projectSelect) return;
+
+        let projects = JSON.parse(localStorage.getItem('projects')) || [];
+
+        projectSelect.innerHTML = '<option value="">Select Project</option>';
+
         projects.forEach(project => {
             const option = document.createElement('option');
-            option.value = project.id;
-            option.textContent = project.name;
-            taskProjectSelect.appendChild(option);
+            option.value = String(project.id);
+            option.textContent = project.name || project.title;
+
+            // Compare the project ID of the task being edited with the current project in the cycle
+            if (selectedProjectId && String(project.id) === String(selectedProjectId)) {
+                option.setAttribute('selected', 'selected');
+                option.selected = true;
+            }
+
+            projectSelect.appendChild(option);
         });
+
+        if (selectedProjectId) {
+            projectSelect.value = String(selectedProjectId);
+        }
     }
     
-    function populateExecutorDropdown() {
-        taskExecutorSelect.innerHTML = '<option value="">No Executor</option>';
-        
-        executors.forEach(executor => {
+    function populateExecutorDropdown(selectedExecutorId = "") {
+        const executorSelect = document.getElementById('task-executor');
+        if (!executorSelect) return;
+
+        let executors = JSON.parse(localStorage.getItem('executors')) || [];
+
+        // Basic reset of the selector to its original state
+        executorSelect.innerHTML = '<option value="">No Executor</option>';
+
+        executors.forEach(exec => {
             const option = document.createElement('option');
-            option.value = executor.id;
-            option.textContent = executor.name;
-            taskExecutorSelect.appendChild(option);
+            
+            // Casting to a string protects against data type bugs in JS
+            option.value = String(exec.id); 
+            option.textContent = exec.name;
+
+            // If the current performer's ID matches the ID in the loop, mark it as selected.
+            if (selectedExecutorId && String(exec.id) === String(selectedExecutorId)) {
+                option.setAttribute('selected', 'selected'); // For HTML markup
+                option.selected = true;                     // For browser DOM properties
+            }
+
+            executorSelect.appendChild(option);
         });
+
+        // Страховочная прямая установка значения для DOM
+        if (selectedExecutorId) {
+            executorSelect.value = String(selectedExecutorId);
+        }
     }
     
     function handleTaskSubmit(e) {
