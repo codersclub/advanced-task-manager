@@ -134,6 +134,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const taskDueDateInput = document.getElementById('task-due-date');
         const taskPriorityInput = document.getElementById('task-priority');
         const taskProjectInput = document.getElementById('task-project');
+        const taskExecutorInput = document.getElementById('task-executor');
         const taskLabelsInput = document.getElementById('task-labels');
         
         // Reset form
@@ -148,6 +149,7 @@ document.addEventListener('DOMContentLoaded', function() {
             taskDueDateInput.value = task.dueDate || '';
             taskPriorityInput.value = task.priority;
             taskProjectInput.value = task.project || '';
+            taskExecutorInput.value = task.executor || '';
             taskLabelsInput.value = task.labels ? task.labels.join(', ') : '';
         } else {
             // Add mode
