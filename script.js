@@ -131,6 +131,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const taskIdInput = document.getElementById('task-id');
         const taskTitleInput = document.getElementById('task-title');
         const taskDescriptionInput = document.getElementById('task-description');
+        const taskStartDateInput = document.getElementById('task-start-date');
         const taskDueDateInput = document.getElementById('task-due-date');
         const taskPriorityInput = document.getElementById('task-priority');
         const taskProjectInput = document.getElementById('task-project');
@@ -146,6 +147,7 @@ document.addEventListener('DOMContentLoaded', function() {
             taskIdInput.value = task.id;
             taskTitleInput.value = task.title;
             taskDescriptionInput.value = task.description || '';
+            taskStartDateInput.value = task.startDate || '';
             taskDueDateInput.value = task.dueDate || '';
             taskPriorityInput.value = task.priority;
             taskProjectInput.value = task.project || '';
@@ -161,11 +163,11 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // Populate projects dropdown
-        populateProjectDropdown(task.project);
+        populateProjectDropdown(taskProjectInput.value);//task.project
         
         // Populate executors dropdown
-        populateExecutorDropdown(task.executor);
-        
+        populateExecutorDropdown(taskExecutorInput.value);
+
         taskModal.style.display = 'flex';
     }
     
@@ -253,6 +255,7 @@ document.addEventListener('DOMContentLoaded', function() {
             executorSelect.value = String(selectedExecutorId);
         }
     }
+
     
     function handleTaskSubmit(e) {
         e.preventDefault();
@@ -260,6 +263,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const taskId = document.getElementById('task-id').value;
         const title = document.getElementById('task-title').value.trim();
         const description = document.getElementById('task-description').value.trim();
+        const startDate = document.getElementById('task-start-date').value;
         const dueDate = document.getElementById('task-due-date').value;
         const priority = document.getElementById('task-priority').value;
         const projectId = document.getElementById('task-project').value;
@@ -280,6 +284,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const taskData = {
             title,
             description,
+            startDate: startDate || null,
             dueDate: dueDate || null,
             priority,
             project: project ? project.id : null,
