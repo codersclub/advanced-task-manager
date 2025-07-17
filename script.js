@@ -44,6 +44,13 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentSort = { by: 'dueDate', order: 'asc' };
     let currentFilters = { priority: 'all', date: 'all' };
     let searchQuery = '';
+
+    const statusList = new Map([
+        ['todo', 'New'],
+        ['in_progress', 'In Progress'],
+        ['review', 'Review'],
+        ['done', 'Done']
+    ]);    
     
     // Initialize the app
     init();
