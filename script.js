@@ -253,7 +253,7 @@ document.addEventListener('DOMContentLoaded', function() {
             executorSelect.appendChild(option);
         });
 
-        // Страховочная прямая установка значения для DOM
+        // Safety direct value setting for DOM
         if (selectedExecutorId) {
             executorSelect.value = String(selectedExecutorId);
         }
