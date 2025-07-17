@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const executorsList = document.getElementById('executors-list');
     const taskProjectSelect = document.getElementById('task-project');
     const taskExecutorSelect = document.getElementById('task-executor');
+    const taskStatusList = document.getElementById('task-status');
     const priorityFilter = document.getElementById('priority-filter');
     const dateFilter = document.getElementById('date-filter');
     const taskSearch = document.getElementById('task-search');
@@ -136,6 +137,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const taskPriorityInput = document.getElementById('task-priority');
         const taskProjectInput = document.getElementById('task-project');
         const taskExecutorInput = document.getElementById('task-executor');
+        const taskStatusInput = document.getElementById('task-status');
         const taskLabelsInput = document.getElementById('task-labels');
         
         // Reset form
@@ -152,6 +154,7 @@ document.addEventListener('DOMContentLoaded', function() {
             taskPriorityInput.value = task.priority;
             taskProjectInput.value = task.project || '';
             taskExecutorInput.value = task.executor || '';
+            taskStatusInput.value = task.status || 'todo';
             taskLabelsInput.value = task.labels ? task.labels.join(', ') : '';
         } else {
             // Add mode
@@ -266,6 +269,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const startDate = document.getElementById('task-start-date').value;
         const dueDate = document.getElementById('task-due-date').value;
         const priority = document.getElementById('task-priority').value;
+        const statusId = document.getElementById('task-status').value;
         const projectId = document.getElementById('task-project').value;
         const executorId = document.getElementById('task-executor').value;
         const labels = document.getElementById('task-labels').value
@@ -292,6 +296,7 @@ document.addEventListener('DOMContentLoaded', function() {
             projectColor: project ? project.color : null,
             executor: executor ? executor.id : null,
             executorName: executor ? executor.name : null,
+            status: statusId ? statusId : null,
             labels,
             isCompleted: false,
             isImportant: false,
@@ -507,6 +512,16 @@ document.addEventListener('DOMContentLoaded', function() {
             const taskElement = document.createElement('div');
             taskElement.className = `task-card ${task.priority}-priority ${task.isCompleted ? 'completed' : ''}`;
             
+            // Status display
+            const statusDisplay = `
+                    <div class="task-detail">
+                        <i class="fas fa-heart"></i>
+                        ${task.status}
+                        <!-- ${statusList.get(task.status)} -->
+                    </div>
+                `;
+
+            
             // Format due date
             let dueDateDisplay = 'No due date';
             if (task.dueDate) {
@@ -574,6 +589,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
                 ${task.description ? `<div class="task-description">${task.description}</div>` : ''}
                 <div class="task-details">
+                    ${statusDisplay}
                     <div class="task-detail">
                         <i class="fas fa-calendar-alt"></i>
                         <span>${dueDateDisplay}</span>
