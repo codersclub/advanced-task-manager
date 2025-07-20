@@ -459,7 +459,7 @@ input:checked + .slider:before {
 }
 
 .task-action-btn.important {
-    color: var(--warning-color);
+    color: var(--secondary-color);
 }
 
 .task-action-btn.important.active {
