@@ -516,6 +516,9 @@ document.addEventListener('DOMContentLoaded', function() {
         tasksList.innerHTML = '';
         
         filteredTasks.forEach(task => {
+
+            task.isCompleted = (task.status=='done');
+
             const taskElement = document.createElement('div');
             taskElement.className = `task-card ${task.priority}-priority ${task.isCompleted ? 'completed' : ''}`;
             
@@ -579,7 +582,6 @@ document.addEventListener('DOMContentLoaded', function() {
             taskElement.innerHTML = `
                 <div class="task-header-row">
                     <div class="task-title ${task.isCompleted ? 'completed' : ''}">
-                        <input type="checkbox" class="complete-checkbox" ${task.isCompleted ? 'checked' : ''} data-task-id="${task.id}">
                         ${task.title}
                     </div>
                     <div class="task-actions-row">
@@ -612,14 +614,6 @@ document.addEventListener('DOMContentLoaded', function() {
             `;
             
             tasksList.appendChild(taskElement);
-        });
-        
-        // Add event listeners to task actions
-        document.querySelectorAll('.complete-checkbox').forEach(checkbox => {
-            checkbox.addEventListener('change', function() {
-                const taskId = this.getAttribute('data-task-id');
-                toggleTaskComplete(taskId);
-            });
         });
         
         document.querySelectorAll('.important').forEach(btn => {
@@ -738,16 +732,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Update project dropdown in task form
         populateExecutorDropdown();
-    }
-
-    function toggleTaskComplete(taskId) {
-        const task = tasks.find(t => t.id === taskId);
-        if (task) {
-            task.isCompleted = !task.isCompleted;
-            saveTasks();
-            renderTasks();
-            updateStats();
-        }
     }
 
     function toggleTaskImportant(taskId) {
